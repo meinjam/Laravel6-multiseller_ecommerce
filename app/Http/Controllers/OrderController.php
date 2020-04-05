@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Order;
+use App\Mail\OrderPaid;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -42,7 +44,7 @@ class OrderController extends Controller
             'shipping_state' => 'required',
             'shipping_phone' => 'required',
             'shipping_zipcode' => 'required',
-            // 'payment_method' => 'required',
+            'payment_method' => 'required',
         ]);
 
         $order = new Order();
@@ -77,6 +79,15 @@ class OrderController extends Controller
 
         $order->user_id = auth()->id();
 
+        if (request('payment_method') == 'paypal') {
+            $order->payment_method = 'paypal';
+        }
+
+        if (request('payment_method') == 'bkash') {
+            $order->payment_method = 'bkash';
+            $order->is_paid = 1;
+        }
+
         $order->save();
 
         //save order items
@@ -86,12 +97,20 @@ class OrderController extends Controller
             $order->items()->attach($item->id, ['price'=> $item->price, 'quantity'=> $item->quantity]);
         }
 
+        // Payment Method
+        // if (request('payment_method') == 'paypal') {
+        //     //redirect to paypal
+        //     return redirect()->route('paypal.checkout', $order->id);
+        // }
+
         //empty cart
         \Cart::session(auth()->id())->clear();
 
         //send email to customer
 
-        return ('Order completed, thank you!!!');
+        // Mail::to($order->user->email)->send(new OrderPaid($order));
+
+        return redirect()->route('home')->with('success', 'Order completed, thank you!!!');
 
         // dd('order created', $order);
     }

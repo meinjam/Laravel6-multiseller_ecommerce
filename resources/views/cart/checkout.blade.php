@@ -10,7 +10,6 @@
         <form action="{{ route('orders.store') }}" method="post"> 
             @csrf
         
-        
             <div class="form-group">
                 <label for="">Full Name</label>
                 <input type="text" name="shipping_fullname" id="" class="form-control">
@@ -47,18 +46,21 @@
                 <label class="form-check-label">
                     <input type="radio" class="form-check-input" name="payment_method" id="" value="cash_on_delivery">
                     Cash on delivery
-        
                 </label>
-        
             </div>
-        
+            
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="payment_method" id="" value="bkash">
+                    bKash
+                </label>
+            </div>
+
             <div class="form-check">
                 <label class="form-check-label">
                     <input type="radio" class="form-check-input" name="payment_method" id="" value="paypal">
                     Paypal
-        
                 </label>
-        
             </div>
         
         
